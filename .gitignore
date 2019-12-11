@@ -8,7 +8,7 @@
 .buildlog/
 .history
 .svn/
-.key_movie_app/
+key_movie_app/
 # IntelliJ related
 *.iml
 *.ipr
