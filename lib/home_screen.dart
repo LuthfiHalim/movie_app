@@ -32,6 +32,53 @@ class _HomeScreenState extends State<HomeScreen> {
       loading = false;
     });
   }
+  
+  Widget _buildDialog(BuildContext context, message) {
+    print('test3');
+    return AlertDialog(
+      content: Text("Item ${message['notification']['title']} has been updated"),
+      actions: <Widget>[
+        FlatButton(
+          child: const Text('CLOSE'),
+          onPressed: () {
+            Navigator.pop(context, false);
+          },
+        ),
+        FlatButton(
+          child: const Text('SHOW'),
+          onPressed: () {
+            Navigator.pop(context, true);
+          },
+        ),
+      ],
+    );
+  }
+
+  void _showItemDialog(Map<String, dynamic> message) {
+    print('test1');
+    showDialog<bool>(
+      context: context,
+      builder: (_) => _buildDialog(context, message),
+    ).then((bool shouldNavigate) {
+      if (shouldNavigate == true) {
+        //_navigateToItemDetail(message);
+      }
+    });
+    final snackBar = SnackBar(
+            content: Text('Yay! A SnackBar!'),
+            action: SnackBarAction(
+              label: 'Undo',
+              onPressed: () {
+                // Some code to undo the change.
+              },
+            ),
+          );
+
+          // Find the Scaffold in the widget tree and use
+          // it to show a SnackBar.
+      Scaffold.of(context).showSnackBar(snackBar);
+    print('test2');
+  }
 
   @override
   void initState() {
@@ -41,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
   _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         print("onMessage: $message");
-        //_showItemDialog(message);
+        _showItemDialog(message);
       },
       onLaunch: (Map<String, dynamic> message) async {
         print("onLaunch: $message");
@@ -52,22 +99,12 @@ class _HomeScreenState extends State<HomeScreen> {
         //_navigateToItemDetail(message);
       },
     );
-    // _firebaseMessaging.requestNotificationPermissions(
-    //     const IosNotificationSettings(sound: true, badge: true, alert: true));
-    // _firebaseMessaging.onIosSettingsRegistered
-    //     .listen((IosNotificationSettings settings) {
-    //   print("Settings registered: $settings");
-    // });
     _firebaseMessaging.getToken().then((String token) {
       assert(token != null);
       setState(() {
       });
       print(token);
-
     });
-
-
-
   }
 
   @override
@@ -168,7 +205,7 @@ class MoviesCard extends StatelessWidget {
                               width: 120,
                               height: 180,
                               child: Image.network(
-                                'https://image.tmdb.org/t/p/w500${movies[index].posterPath}',
+                                'https://image.tmdb.org/t/p/original${movies[index].posterPath}',
                                 fit: BoxFit.fitWidth,
                                 loadingBuilder: (BuildContext context,
                                     Widget child,
