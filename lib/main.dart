@@ -8,7 +8,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Forms in Flutter',
       theme: ThemeData(
-        primarySwatch: Colors.red
+        primarySwatch: Colors.grey
       ),
       initialRoute: Pages.Home,
       onGenerateRoute: Router().getRoute,

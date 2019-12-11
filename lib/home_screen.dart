@@ -39,11 +39,17 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
+            backgroundColor: Colors.grey,
             appBar: AppBar(
-              title: Text('Movie'),
+              backgroundColor: Colors.black,
+              title: Text(
+                'Movies',
+                style: TextStyle(color: Colors.white, fontSize: 26),
+                textAlign: TextAlign.center,
+              ),
             ),
             body: loading
-                ? Text('loading')
+                ? Center(child:CircularProgressIndicator(backgroundColor: Colors.black,))
                 : ListView(
                     children: <Widget>[
                       MovieType(
@@ -87,7 +93,7 @@ class MovieType extends StatelessWidget {
       width: MediaQuery.of(context).size.width,
       child: Row(
         children: <Widget>[
-          Text(type),
+          Text('   $type', style: TextStyle(fontSize: 24)),
           Spacer(),
           Text('see all'),
           Icon(Icons.arrow_forward_ios)
@@ -121,24 +127,55 @@ class MoviesCard extends StatelessWidget {
                         height: 240,
                         width: 120,
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Image.network(
-                              'https://image.tmdb.org/t/p/w500${movies[index].posterPath}',
-                              fit: BoxFit.fitWidth,
+                            Container(
+                              width: 120,
+                              height: 180,
+                              child: Image.network(
+                                'https://image.tmdb.org/t/p/w500${movies[index].posterPath}',
+                                fit: BoxFit.fitWidth,
+                                loadingBuilder: (BuildContext context,
+                                    Widget child,
+                                    ImageChunkEvent loadingProgress) {
+                                  if (loadingProgress == null) return child;
+                                  return Center(
+                                    child: CircularProgressIndicator(
+                                      value: loadingProgress
+                                                  .expectedTotalBytes !=
+                                              null
+                                          ? loadingProgress
+                                                  .cumulativeBytesLoaded /
+                                              loadingProgress.expectedTotalBytes
+                                          : null,
+                                    ),
+                                  );
+                                },
+                              ),
                             ),
-                            Spacer(),
-                            Row(
-                              children: <Widget>[
-                                Expanded(
-                                  child: Text(movies[index].title),
-                                ),
-                                Icon(
-                                  Icons.star,
-                                  color: Colors.yellow,
-                                ),
-                                Text(movies[index].voteAverage.toString()),
-                              ],
+                            Spacer(flex: 1,),
+                            Expanded(
+                              flex: 5,
+                              child: Text(
+                                movies[index].title,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
+                            Expanded(
+                              flex: 5,
+                              child: Row(
+                                children: <Widget>[
+                                  Spacer(flex: 4,),
+                                  Icon(
+                                    Icons.star,
+                                    color: Colors.yellow,
+                                  ),
+                                  Text(movies[index].voteAverage.toString()),
+                                  Spacer(flex: 1,)
+                                ],
+                              ),
+                            ),
+                            Spacer(flex: 1,)
                           ],
                         ))));
           }),
